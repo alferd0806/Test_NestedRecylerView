@@ -74,21 +74,9 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
-.idea/.gitignore
-.idea/codeStyles/
-.idea/compiler.xml
-.idea/jarRepositories.xml
-.idea/misc.xml
-.settings/
 app/.gitignore
-app/.settings/
-app/build.gradle
-app/proguard-rules.pro
-app/src/
-build.gradle
+.settings/
 gif/
-gradle.properties
-gradle/
 gradlew
-gradlew.bat
-settings.gradle
+test/
+androidTest/
