@@ -17,7 +17,6 @@ open class ChildRecyclerView @JvmOverloads constructor(
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
     private val mFlingHelper = FlingHelper(context)
-    private var scrollListener: OnScrollListener? = null
     private var mMaxDistance = 0
 
     private var mVelocityY = 0
@@ -41,7 +40,6 @@ open class ChildRecyclerView @JvmOverloads constructor(
                 dx: Int,
                 dy: Int
             ) {
-                super.onScrolled(recyclerView, dx, dy)
                 if (isStartFling) {
                     totalDy = 0
                     isStartFling = false
@@ -56,9 +54,8 @@ open class ChildRecyclerView @JvmOverloads constructor(
                 if (newState == SCROLL_STATE_IDLE) {
                     dispatchParentFling()
                 }
-                super.onScrollStateChanged(recyclerView, newState)
             }
-        }.also { scrollListener = it })
+        })
     }
 
     private fun dispatchParentFling() {
@@ -118,19 +115,12 @@ open class ChildRecyclerView @JvmOverloads constructor(
         return super.startNestedScroll(axes, type)
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        scrollListener?.let {
-            removeOnScrollListener(it)
-        }
-    }
-
     private var handleChildTouchEvent: Boolean? = null
     private var lastY = 0f
     private var ignore = false
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        Log.i("zxm", "test=${findParentRecyclerView()?.testDy}")
+//        Log.i("zxm", "test=${findParentRecyclerView()?.testDy}")
         when (ev?.action) {
             MotionEvent.ACTION_DOWN -> {
                 mVelocityY = 0

@@ -34,7 +34,7 @@ class MainActivity : BaseMenuActivity() {
 
     private fun refresh() {
         mDataList.clear()
-        for (i in 0..1) {
+        for (i in 0..2) {
             mDataList.add("parent item text $i")
         }
         val categoryBean = CategoryBean()

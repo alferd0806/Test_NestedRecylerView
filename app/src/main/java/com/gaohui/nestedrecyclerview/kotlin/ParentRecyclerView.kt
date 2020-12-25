@@ -25,7 +25,6 @@ class ParentRecyclerView @JvmOverloads constructor(
     private var mMaxDistance: Int = 0
 
     private val mFlingHelper = FlingHelper(context)
-    private var scrollListener: OnScrollListener? = null
 
     /**
      * 记录上次Event事件的y坐标
@@ -45,9 +44,6 @@ class ParentRecyclerView @JvmOverloads constructor(
     private var velocityY: Int = 0
     private var canScrollVertically: AtomicBoolean
 
-    //特殊操作
-    private var appBarLayout: AppBarLayout? = null
-
     init {
         mMaxDistance =
             mFlingHelper.getVelocityByDistance((UIUtils.getScreenHeight() * 4).toDouble())
@@ -57,7 +53,6 @@ class ParentRecyclerView @JvmOverloads constructor(
                 recyclerView: RecyclerView,
                 newState: Int
             ) {
-                super.onScrollStateChanged(recyclerView, newState)
                 //如果父RecyclerView fling过程中已经到底部，需要让子RecyclerView滑动剩余的fling
                 if (newState == SCROLL_STATE_IDLE) {
                     dispatchChildFling()
@@ -69,7 +64,18 @@ class ParentRecyclerView @JvmOverloads constructor(
                 dx: Int,
                 dy: Int
             ) {
-                super.onScrolled(recyclerView, dx, dy)
+                //检查当前的滑动方向上是否还可以滑动
+                canScroll = when {
+                    dy > 0 -> {   //向上滑
+                        canScrollVertically(1)
+                    }
+                    dy < 0 -> {  //向下滑
+                        canScrollVertically(-1)
+                    }
+                    else -> {
+                        false
+                    }
+                }
                 testDy += dy
                 if (isStartFling) {
                     totalDy = 0
@@ -78,9 +84,10 @@ class ParentRecyclerView @JvmOverloads constructor(
                 //在RecyclerView fling情况下，记录当前RecyclerView在y轴的偏移
                 totalDy += dy
             }
-        }.also { scrollListener = it })
+        })
     }
 
+    private var canScroll = false
     var isCollapse: Boolean? = null
 
     private fun findAppBarLayout() {
@@ -93,10 +100,9 @@ class ParentRecyclerView @JvmOverloads constructor(
                         for (i in 0 until childCount) {
                             val child = p.getChildAt(i)
                             if (child is AppBarLayout) {
-                                appBarLayout = child
-                                appBarLayout?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalRange ->
+                                child.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalRange ->
                                     isCollapse =
-                                        abs(verticalRange) >= appBarLayout?.totalScrollRange ?: 0
+                                        abs(verticalRange) >= child.totalScrollRange
                                 })
                                 break
                             }
@@ -113,13 +119,6 @@ class ParentRecyclerView @JvmOverloads constructor(
         super.onAttachedToWindow()
         //初始化AppBarLayout监听
         findAppBarLayout()
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        scrollListener?.let {
-            removeOnScrollListener(it)
-        }
     }
 
     private fun dispatchChildFling() {
@@ -160,7 +159,7 @@ class ParentRecyclerView @JvmOverloads constructor(
                 override fun canScrollVertically(): Boolean {
                     val childRecyclerView = findNestedScrollingChildRecyclerView()
                     return if (childRecyclerView?.isScrollTop() == false) {
-                        false
+                        canScroll
                     } else {
                         //当childRecyclerView已经滑到顶部，且继续向上滑
                         if (deltaYInTouchEvent < 0) {
