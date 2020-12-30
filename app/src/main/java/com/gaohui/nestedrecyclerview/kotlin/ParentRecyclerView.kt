@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewParent
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gaohui.nestedrecyclerview.UIUtils
@@ -31,7 +32,6 @@ class ParentRecyclerView @JvmOverloads constructor(
      */
     private var lastY: Float = 0f
     private var totalDy = 0
-    var testDy = 0
 
     /**
      * 用于判断RecyclerView是否在fling
@@ -76,7 +76,6 @@ class ParentRecyclerView @JvmOverloads constructor(
                         false
                     }
                 }
-                testDy += dy
                 if (isStartFling) {
                     totalDy = 0
                     isStartFling = false
@@ -222,6 +221,9 @@ class ParentRecyclerView @JvmOverloads constructor(
         if (e.action == MotionEvent.ACTION_UP) {
             canScrollVertically.set(true)
         }
+        if (e.action == MotionEvent.ACTION_MOVE) {
+            startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL, ViewCompat.TYPE_TOUCH)
+        }
         lastY = e.y
         return try {
             super.onTouchEvent(e)
@@ -280,6 +282,7 @@ class ParentRecyclerView @JvmOverloads constructor(
                 || childRecyclerView.isScrollTop().not())
         //以上两种情况都需要让Parent RecyclerView去scroll，和下面onNestedPreFling机制类似
         if (isParentCanScroll || isChildCanNotScroll) {
+            startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL, ViewCompat.TYPE_TOUCH)
             scrollBy(0, dy)
             consumed[1] = dy
         }

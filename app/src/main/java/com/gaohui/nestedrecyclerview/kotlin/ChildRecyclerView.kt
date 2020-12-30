@@ -2,7 +2,6 @@ package com.gaohui.nestedrecyclerview.kotlin
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -88,7 +87,6 @@ open class ChildRecyclerView @JvmOverloads constructor(
             isStartFling = true
             mVelocityY = velocityY
         }
-        ignore = false
         return fling
     }
 
@@ -116,35 +114,18 @@ open class ChildRecyclerView @JvmOverloads constructor(
     }
 
     private var handleChildTouchEvent: Boolean? = null
-    private var lastY = 0f
-    private var ignore = false
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-//        Log.i("zxm", "test=${findParentRecyclerView()?.testDy}")
         when (ev?.action) {
             MotionEvent.ACTION_DOWN -> {
                 mVelocityY = 0
-                lastY = ev.y
-            }
-            MotionEvent.ACTION_MOVE -> {
-                if (ev.y - lastY > 0 && findParentRecyclerView()?.isCollapse == true && findParentRecyclerView()?.testDy == 0) {
-                    ignore = true
-                    super.dispatchTouchEvent(ev)
-                    return true
-                } else {
-                    ignore = false
-                }
-            }
-            MotionEvent.ACTION_UP -> {
-                ignore = false
-                lastY = 0f
             }
         }
         return super.dispatchTouchEvent(ev)
     }
 
     override fun onInterceptTouchEvent(e: MotionEvent?): Boolean {
-        handleChildTouchEvent = findParentRecyclerView()?.isCollapse == false || ignore
+        handleChildTouchEvent = findParentRecyclerView()?.isCollapse == false
         if (handleChildTouchEvent == true) {
             return false
         }
