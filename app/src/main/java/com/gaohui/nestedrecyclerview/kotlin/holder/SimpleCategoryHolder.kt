@@ -11,10 +11,10 @@ import com.gaohui.nestedrecyclerview.kotlin.adapter.CategoryPagerAdapter
 import com.gaohui.nestedrecyclerview.kotlin.bean.CategoryBean
 import com.gaohui.nestedrecyclerview.kotlin.tab.DynamicTabLayout
 
-class SimpleCategoryViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+class SimpleCategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val mTabLayout: DynamicTabLayout = itemView.findViewById(R.id.newTabLayout) as DynamicTabLayout
-    private val mViewPager: androidx.viewpager.widget.ViewPager = itemView.findViewById(R.id.viewPager) as androidx.viewpager.widget.ViewPager
+    private val mViewPager: ViewPager = itemView.findViewById(R.id.viewPager) as ViewPager
 
     val viewList = ArrayList<CategoryView>()
 
@@ -26,7 +26,7 @@ class SimpleCategoryViewHolder(itemView: View) : androidx.recyclerview.widget.Re
 
     init {
         mTabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT)
-        mViewPager.addOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener{
+        mViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
 
             }
@@ -35,8 +35,8 @@ class SimpleCategoryViewHolder(itemView: View) : androidx.recyclerview.widget.Re
                     mCurrentRecyclerView = viewList[position]
                     mCurrentRecyclerView?.apply {
                         addOnScrollListener(object :
-                            androidx.recyclerview.widget.RecyclerView.OnScrollListener(){
-                            override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+                            RecyclerView.OnScrollListener(){
+                            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                                 super.onScrolled(recyclerView, dx, dy)
                                 if(dy != 0) {
                                     dealWithChildScrollEvents(this@apply.isScrollTop())
@@ -49,7 +49,6 @@ class SimpleCategoryViewHolder(itemView: View) : androidx.recyclerview.widget.Re
             override fun onPageScrollStateChanged(state: Int) {
 
             }
-
         })
     }
 
@@ -97,8 +96,8 @@ class SimpleCategoryViewHolder(itemView: View) : androidx.recyclerview.widget.Re
 
     private fun bindDefaultChildRecyclerViewScrolling(categoryView: CategoryView) {
         categoryView.apply {
-            addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener(){
-                override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+            addOnScrollListener(object : RecyclerView.OnScrollListener(){
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     if(dy != 0) {
                         dealWithChildScrollEvents(this@apply.isScrollTop())

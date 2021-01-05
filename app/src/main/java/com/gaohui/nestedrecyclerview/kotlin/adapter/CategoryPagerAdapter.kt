@@ -10,7 +10,7 @@ import com.gaohui.nestedrecyclerview.kotlin.tab.DynamicTabLayout
 class CategoryPagerAdapter(
     private val viewList: ArrayList<CategoryView>,
     private val tabTitleList: ArrayList<String>
-) : androidx.viewpager.widget.PagerAdapter(), DynamicTabLayout.DynamicTabProvider {
+) : PagerAdapter(), DynamicTabLayout.DynamicTabProvider {
 
     private var mCurrentPrimaryItem: CategoryView? = null
 
