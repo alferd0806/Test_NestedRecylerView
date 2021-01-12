@@ -65,17 +65,17 @@ class ParentRecyclerView @JvmOverloads constructor(
                 dy: Int
             ) {
                 //检查当前的滑动方向上是否还可以滑动
-                canScroll = when {
-                    dy > 0 -> {   //向上滑
-                        canScrollVertically(1)
-                    }
-                    dy < 0 -> {  //向下滑
-                        canScrollVertically(-1)
-                    }
-                    else -> {
-                        false
-                    }
-                }
+//                canScroll = when {
+//                    dy > 0 -> {   //向上滑
+//                        canScrollVertically(1)
+//                    }
+//                    dy < 0 -> {  //向下滑
+//                        canScrollVertically(-1)
+//                    }
+//                    else -> {
+//                        false
+//                    }
+//                }
                 if (isStartFling) {
                     totalDy = 0
                     isStartFling = false
